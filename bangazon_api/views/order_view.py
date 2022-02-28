@@ -7,6 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from bangazon_api.models import Order, PaymentType
+from bangazon_api.models.product import Product
 from bangazon_api.serializers import OrderSerializer, UpdateOrderSerializer
 from bangazon_api.serializers.message_serializer import MessageSerializer
 
