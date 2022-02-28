@@ -46,7 +46,6 @@ class ProductTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(response.data['id'])
 
-
     def test_update_product(self):
         """
         Ensure we can update a product.
@@ -61,7 +60,8 @@ class ProductTests(APITestCase):
             "imagePath": "",
             "categoryId": product.category.id
         }
-        response = self.client.put(f'/api/products/{product.id}', data, format='json')
+        response = self.client.put(
+            f'/api/products/{product.id}', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         product_updated = Product.objects.get(pk=product.id)
@@ -75,3 +75,37 @@ class ProductTests(APITestCase):
         response = self.client.get('/api/products')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), Product.objects.count())
+
+    def test_delete_product(self):
+        """
+        Ensure we can delete an existing product.
+        """
+
+        # Create a new instance of product
+        product = Product()
+        product.name = "Hat"
+        product.description = "Really Cool Hat"
+        product.quantity = 1
+        product.location = "Illinois"
+        product.image_path = ""
+        product.price = 1.50
+        product.category_id = 1
+        product.store_id = 1
+
+        # Save the Product to the testing database
+        product.save()
+
+        # Define the URL path for deleting an existing Game
+        url = f'/products/{product.id}'
+
+        # Initiate DELETE request and capture the response
+        response = self.client.delete(url)
+
+        # Assert that the response status code is 204 (NO CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Initiate GET request and capture the response
+        response = self.client.get(url)
+
+        # Assert that the response status code is 404 (NOT FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

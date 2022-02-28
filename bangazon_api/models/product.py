@@ -32,8 +32,11 @@ class Product(models.Model):
         for rating in self.ratings.all():
             total_rating += rating.score
 
-        avg = total_rating / self.ratings.count()
-        return avg
+        if (self.ratings.count() > 0):
+            avg = total_rating / self.ratings.count()
+            return avg
+        else:
+            return total_rating
 
     @property
     def number_purchased(self):
