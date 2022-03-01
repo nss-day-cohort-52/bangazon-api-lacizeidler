@@ -7,16 +7,13 @@
   </head>
   <body>
     <h1>Top Products</h1>
-
-    {% for user in userevent_list %}
-        <h2>{{ user.full_name }}</h2>
         <ol>
-            {% for event in user.events %}
+            {% for product in productquantity_list %}
             <li>
-                Description: {{ event.description }}
+                Name: {{ product.name }}
+                Quantity: {{product.quantity}}
             </li>
             {% endfor %}
         </ol>
-    {% endfor %}
   </body>
 </html>
