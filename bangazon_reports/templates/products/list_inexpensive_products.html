@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bangazon Inexpensive Products Report</title>
+  </head>
+  <body>
+    <h1>Inexpensive Products</h1>
+        <ol>
+            {% for product in productprice_list %}
+            <li>
+                Name: {{ product.name }}
+                Quantity: {{product.price}}
+            </li>
+            {% endfor %}
+        </ol>
+  </body>
+</html>
