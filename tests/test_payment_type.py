@@ -38,33 +38,33 @@ class PaymentTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(response.data['id'])
         self.assertEqual(response.data["merchant_name"], data['merchant'])
-        self.assertEqual(response.data["acct_number"], data['acctNumber'])
+        self.assertEqual(response.data["obscured_num"][-4:], data['acctNumber'][-4:])
 
-    # def test_delete_payment_type(self):
-    #     """
-    #     Ensure we can delete an existing product.
-    #     """
+    def test_delete_payment_type(self):
+        """
+        Ensure we can delete an existing product.
+        """
 
-    #     # Create a new instance of product
-    #     payment_type = PaymentType()
-    #     payment_type.merchant_name = "American Express"
-    #     payment_type.acct_number = "7364291236487395"
-    #     payment_type.customer_id = 1
+        # Create a new instance of product
+        payment_type = PaymentType()
+        payment_type.merchant_name = "American Express"
+        payment_type.acct_number = "7364291236487395"
+        payment_type.customer_id = 1
 
-    #     # Save the Product to the testing database
-    #     payment_type.save()
+        # Save the Product to the testing database
+        payment_type.save()
 
-    #     # Define the URL path for deleting an existing Game
-    #     url = f'/paymentType/{payment_type.id}'
+        # Define the URL path for deleting an existing Game
+        url = f'/paymentType/{payment_type.id}'
 
-    #     # Initiate DELETE request and capture the response
-    #     response = self.client.delete(url)
+        # Initiate DELETE request and capture the response
+        response = self.client.delete(url)
 
-    #     # Assert that the response status code is 204 (NO CONTENT)
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Assert that the response status code is 204 (NO CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    #     # Initiate GET request and capture the response
-    #     response = self.client.get(url)
+        # Initiate GET request and capture the response
+        response = self.client.get(url)
 
-    #     # Assert that the response status code is 404 (NOT FOUND)
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Assert that the response status code is 404 (NOT FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
