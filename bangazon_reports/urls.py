@@ -1,4 +1,4 @@
-from .views import TopProductList, InexpensiveProductList, ExpensiveProductList, IncompleteOrdersList, CompleteOrdersList
+from .views import TopProductList, InexpensiveProductList, ExpensiveProductList, IncompleteOrdersList, CompleteOrdersList, FavoritedStoreList
 from django.urls import path
 
 urlpatterns = [
@@ -6,5 +6,6 @@ urlpatterns = [
     path('inexpensiveProducts', InexpensiveProductList.as_view()),
     path('expensiveProducts', ExpensiveProductList.as_view()),
     path('incompleteOrders', IncompleteOrdersList.as_view()),
-    path('completeOrders', CompleteOrdersList.as_view())
+    path('completeOrders', CompleteOrdersList.as_view()),
+    path('favoriteStores', FavoritedStoreList.as_view())
 ]
