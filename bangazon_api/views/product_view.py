@@ -63,6 +63,20 @@ class ProductView(ViewSet):
             )
         }
     )
+    @action(methods=['post'], detail=True)
+    def like(self, request, pk):
+        user = request.auth.user
+        product = Product.objects.get(pk=pk)
+        product.likes.add(user)
+        return Response({'message': 'Liked Product'}, status=status.HTTP_201_CREATED)
+
+    @action(methods=['delete'], detail=True)
+    def unlike(self, request, pk):
+        user = request.auth.user
+        product = Product.objects.get(pk=pk)
+        product.likes.remove(user)
+        return Response({'message': 'Unlike Product'}, status=status.HTTP_201_CREATED)
+
     def update(self, request, pk):
         """Update a product"""
         category = Category.objects.get(pk=request.data['categoryId'])
@@ -96,7 +110,8 @@ class ProductView(ViewSet):
     def destroy(self, request, pk):
         """Delete a product"""
         try:
-            product = Product.objects.get(pk=pk, store__seller=request.auth.user)
+            product = Product.objects.get(
+                pk=pk, store__seller=request.auth.user)
             product.delete()
             return Response(None, status=status.HTTP_204_NO_CONTENT)
         except Product.DoesNotExist as ex:
@@ -251,11 +266,12 @@ class ProductView(ViewSet):
             product = Product.objects.get(pk=pk)
             order = Order.objects.get(
                 user=request.auth.user, completed_on=None)
+            order.products.remove(product)
             return Response(None, status=status.HTTP_204_NO_CONTENT)
         except Product.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
-        except Order.DoesNotExist as ex:
-            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        # except Order.DoesNotExist as ex:
+        #     return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
         method='DELETE',
