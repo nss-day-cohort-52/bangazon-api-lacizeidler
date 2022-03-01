@@ -1,2 +1,3 @@
 from bangazon_reports.views.helpers import dict_fetch_all
 from bangazon_reports.views.products.products_20 import TopProductList
+from bangazon_reports.views.products.products_inexpensive import InexpensiveProductList
