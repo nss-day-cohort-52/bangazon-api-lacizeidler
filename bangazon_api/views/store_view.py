@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from django.db.models import Q, Count
-
+from rest_framework.decorators import action
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from bangazon_api.models import Store
@@ -45,6 +45,20 @@ class StoreView(ViewSet):
             )
         }
     )
+    @action(methods=['post'], detail=True)
+    def favorite(self, request, pk):
+        user = request.auth.user
+        store = Store.objects.get(pk=pk)
+        store.favorites.add(user)
+        return Response({'message': 'Favorite Store'}, status=status.HTTP_201_CREATED)
+
+    @action(methods=['delete'], detail=True)
+    def unfavorite(self, request, pk):
+        user = request.auth.user
+        store = Store.objects.get(pk=pk)
+        store.favorites.remove(user)
+        return Response({'message': 'Unfavorite Store'}, status=status.HTTP_201_CREATED)
+
     def list(self, request):
         """Get a list of all stores"""
         stores = Store.objects.all()
