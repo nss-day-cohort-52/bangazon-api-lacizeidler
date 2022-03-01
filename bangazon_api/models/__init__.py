@@ -1,3 +1,4 @@
+from .like import Like
 from .category import Category
 from .favorite import Favorite
 from .order import Order
@@ -7,3 +8,4 @@ from .product import Product
 from .rating import Rating
 from .recommendation import Recommendation
 from .store import Store
+
