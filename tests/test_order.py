@@ -5,6 +5,7 @@ from django.core.management import call_command
 from django.contrib.auth.models import User
 
 from bangazon_api.models import Order, Product
+from bangazon_api.models.payment_type import PaymentType
 
 
 class OrderTests(APITestCase):
@@ -33,6 +34,12 @@ class OrderTests(APITestCase):
 
         self.client.credentials(
             HTTP_AUTHORIZATION=f'Token {self.token.key}')
+        
+        self.payment_type = PaymentType()
+        self.payment_type.merchant_name = "Discover"
+        self.payment_type.acct_number = "6482548268882451"
+        self.payment_type.customer_id = self.user1.id
+        self.payment_type.save()
 
     def test_list_orders(self):
         """The orders list should return a list of orders for the logged in user"""
@@ -45,14 +52,12 @@ class OrderTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_complete_order(self):
-        url = 'api/orders/complete'
-        order = {
-            'created_on': '2022-02-28 15:21:38.231933',
-            'completed_on': '2022-02-29 15:21:38.231933',
-            'payment_type_id': 5
+        url = f'/api/orders/{self.order1.id}/complete'
+        orderObj = {
+            "paymentTypeId": self.payment_type.id
         }
-        response = self.client.post(url, order, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["user"]['user'], self.token.user_id)
-        self.assertEqual(response.data["created_on"], order['created_on'])
-        self.assertEqual(response.data["completed_on"], order['completed_on'])
+        response = self.client.put(url, orderObj, format='json')
+        order = Order.objects.get(pk=self.order1.id)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(order.payment_type_id, self.payment_type.id)
+        self.assertIsNotNone(order.completed_on)
