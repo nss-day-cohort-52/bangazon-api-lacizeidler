@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from bangazon_api.helpers import STATE_NAMES
 from bangazon_api.models import Category
 from bangazon_api.models.product import Product
+from bangazon_api.models.rating import Rating
 
 
 class ProductTests(APITestCase):
@@ -81,7 +82,6 @@ class ProductTests(APITestCase):
         Ensure we can delete an existing product.
         """
 
-        # Create a new instance of product
         product = Product()
         product.name = "Hat"
         product.description = "Really Cool Hat"
@@ -92,13 +92,10 @@ class ProductTests(APITestCase):
         product.category_id = 1
         product.store_id = 1
 
-        # Save the Product to the testing database
         product.save()
 
-        # Define the URL path for deleting an existing Game
         url = f'/products/{product.id}'
 
-        # Initiate DELETE request and capture the response
         response = self.client.delete(url)
 
         # Assert that the response status code is 204 (NO CONTENT)
@@ -109,3 +106,22 @@ class ProductTests(APITestCase):
 
         # Assert that the response status code is 404 (NOT FOUND)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_create_rating(self):
+        """
+        Ensure we can create a new rating.
+        """
+        customer = User.objects.first()
+        product = Product.objects.first()
+
+        data = {
+            "score": 4,
+            "customerId": customer.id,
+            "productId": product.id,
+            "review": "It was nice"
+        }
+        response = self.client.post(f'/api/products/{product.id}/rate-product', data, format='json')
+        rating = Rating.objects.get(customer_id=data['customerId'], product_id=data['productId'])
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIsNotNone(rating)
