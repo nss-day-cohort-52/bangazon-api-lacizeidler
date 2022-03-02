@@ -32,5 +32,5 @@ class Migration(migrations.Migration):
             model_name='recommendation',
             name='recommender',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recommended_by', to=settings.AUTH_USER_MODEL),
-        ),
+        )
     ]

@@ -28,7 +28,6 @@ class Product(models.Model):
         Returns:
             number -- The average rating for the product
         """
-        # TODO: Fix Divide by zero error
 
         total_rating = 0
         for rating in self.ratings.all():
