@@ -35,7 +35,7 @@ class OrderTests(APITestCase):
 
         self.client.credentials(
             HTTP_AUTHORIZATION=f'Token {self.token.key}')
-        
+
         self.payment_type = PaymentType()
         self.payment_type.merchant_name = "Discover"
         self.payment_type.acct_number = "6482548268882451"
@@ -62,17 +62,3 @@ class OrderTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(order.payment_type_id, self.payment_type.id)
         self.assertIsNotNone(order.completed_on)
-
-    def test_add_product(self):
-        """
-        Ensure we can create a new orderproduct object.
-        """
-        product = Product.objects.first()
-        
-        response = self.client.post(f'/api/products/{product.id}/add_to_order', format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
-        # order_product = OrderProduct.objects.get(order_id=data['orderId'], product_id=data['productId'])
-
-        # self.assertIsNotNone(order_product)
-        
