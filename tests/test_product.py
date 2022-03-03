@@ -125,3 +125,17 @@ class ProductTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(rating)
+        
+    def test_add_product(self):
+        """
+        Ensure we can create a new orderproduct object.
+        """
+        product = Product.objects.first()
+
+        response = self.client.post(
+            f'/api/products/{product.id}/add_to_order', format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # order_product = OrderProduct.objects.get(order_id=data['orderId'], product_id=data['productId'])
+
+        # self.assertIsNotNone(order_product)

@@ -5,6 +5,7 @@ from django.core.management import call_command
 from django.contrib.auth.models import User
 
 from bangazon_api.models import Order, Product
+from bangazon_api.models.order_product import OrderProduct
 from bangazon_api.models.payment_type import PaymentType
 
 
@@ -34,7 +35,7 @@ class OrderTests(APITestCase):
 
         self.client.credentials(
             HTTP_AUTHORIZATION=f'Token {self.token.key}')
-        
+
         self.payment_type = PaymentType()
         self.payment_type.merchant_name = "Discover"
         self.payment_type.acct_number = "6482548268882451"
