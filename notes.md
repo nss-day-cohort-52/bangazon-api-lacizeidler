@@ -47,13 +47,40 @@ payment_types = PaymentType.objects.filter(customer=request.auth.user)
 ```
 
 ## Get list of products over a specified price (Issue #7) 
+On product_view.py, line 185 and lines 202-203.
+```
+min_price = request.query_params.get('min_price', None)
+``` 
+```
+if min_price is not None:
+    products = products.filter(price__gt=min_price)
+```
 
 ## Increase maximum possible price (issue#8) 
+On product.py, line 11, changed MaxValueValidator to 17500.00 from 10000.00.
+```
+MinValueValidator(0.00), MaxValueValidator(17500.00)])
+```
 
 ## Division by zero error on products (Issue #9)
+On product.py, lines 36-40, created an if statement so that the total_rating shows if there isn't any reviews. 
+```
+if (self.ratings.count() > 0):
+    avg = total_rating / self.ratings.count()
+    return avg
+else:
+    return total_rating
+```
 
 ## Get products by location (Issue #10) 
-
+On product_view.py, line 185 and lines 205-206.
+```
+location = request.query_params.get('location', None)
+```
+```
+if location is not None: 
+    products = products.filter(location__icontains=location)
+```
 
 ## Users can favorite/unfavorite a store (Issue #11) 
 Added a POST action method and a DELETE action method. On store_view.py, lines 48-60.
@@ -94,14 +121,29 @@ def unlike(self, request, pk):
 ```
 
 ## TEST: Complete order by adding payment type (Issue #13) 
+On test_payment_type.py, line 41, changed acct_number to obscured_num and using splice to compare the last four digits. 
+```
+self.assertEqual(response.data["obscured_num"][-4:], data['acctNumber'][-4:])
+```
 
 ## TEST: New line item is not added to closed order (Issue #14) 
+On test_product.py, lines 110-127, created test_create_rating method. 
+Check to see if that rating exists by using assertIsNotNone. 
 
 ## TEST: Delete payment type (Issue #15)
+On test_payment_type.py, lines 43-70, created test_delete_payment_type method. 
 
 ## TEST: Delete product (Issue #16) 
+On test_product.py, lines 80-108, created test_delete_product method. 
 
 ## TEST: Product can be rated. Assert average rating exists. (Issue #17)
+On test_product.py, lines 129-137, created test_add_product method. 
+```
+product = Product.objects.first()
+response = self.client.post(
+    f'/api/products/{product.id}/add_to_order', format='json')
+self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+```
 
 ## REPORT: Expensive products (Issue #18) 
 Created a products_inexpensive.py module and add an InexpensiveProductList View to iterate through the products that contain a price key that has a value of greater than 1000. 
